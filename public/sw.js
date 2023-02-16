@@ -1,7 +1,7 @@
 // refererring to service worker with self
 // no dom access to sw
 
-var CACHE_STATIC_NAME = "static-v4";
+var CACHE_STATIC_NAME = "static-v6";
 var CACHE_DYNAMIC_NAME = "dynamic-v2";
 
 self.addEventListener("install", (event) => {
@@ -72,7 +72,12 @@ self.addEventListener("fetch", (event) => {
               // response data is supposed to be consumed once only,
               // therefore we create an exact clone out of it and
               // let original be returned
-              cache.put(event.request.url, res.clone());
+
+              // temporarily turn off dynamic caching to simulate
+              // saving on a user onClick event outside of service worker
+
+              // cache.put(event.request.url, res.clone());
+
               return res;
             });
           })

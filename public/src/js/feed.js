@@ -32,6 +32,10 @@ shareImageButton.addEventListener("click", openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener("click", closeCreatePostModal);
 
+function onSaveButtonClicked(event) {
+  console.log("clicked");
+}
+
 function createCard() {
   var cardWrapper = document.createElement("div");
   cardWrapper.className = "shared-moment-card mdl-card mdl-shadow--2dp";
@@ -50,6 +54,13 @@ function createCard() {
   cardSupportingText.className = "mdl-card__supporting-text";
   cardSupportingText.textContent = "In delhi";
   cardSupportingText.style.textAlign = "center";
+
+  //adding a button for user onClick event
+  var cardSaveButton = document.createElement("button");
+  cardSupportingText.appendChild(cardSaveButton);
+  cardSaveButton.textContent = "Save for later";
+  cardSaveButton.addEventListener("click", onSaveButtonClicked);
+
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
