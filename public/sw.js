@@ -3,6 +3,14 @@
 
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
+
+  //refer to cache api, creating an open api
+  event.waitUntil(
+    caches.open("static").then((cache) => {
+      console.log("[Service Worker] Pre-cache..ing app.js ");
+      cache.add("/src/js/app.js");
+    })
+  );
 });
 
 self.addEventListener("activate", (event) => {
