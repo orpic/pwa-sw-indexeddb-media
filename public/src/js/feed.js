@@ -34,6 +34,18 @@ closeCreatePostModalButton.addEventListener("click", closeCreatePostModal);
 
 function onSaveButtonClicked(event) {
   console.log("clicked");
+
+  //cache can be accessed anywhere
+
+  if ("caches" in window) {
+    // we could disable button if cache functionality is not present
+    // to provide better user experience
+
+    caches.open("user-requested").then((cache) => {
+      cache.add("https://httpbin.org/get");
+      cache.add("/src/images/sf-boat.jpg");
+    });
+  }
 }
 
 function createCard() {
@@ -66,6 +78,7 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
+//dummy url sending and loading feed data
 fetch("https://httpbin.org/get")
   .then(function (res) {
     return res.json();
