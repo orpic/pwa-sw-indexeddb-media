@@ -49,7 +49,28 @@ self.addEventListener("fetch", (event) => {
       if (response) {
         return response;
       } else {
-        return fetch(event.request);
+        return fetch(event.request).then((res) => {
+          // return necessary because giving back reponse to dom is necessary
+          return caches.open("dynamic").then((cache) => {
+            // response data is supposed to be consumed once only,
+            // therefore we create an exact clone out of it and
+            // let original be returned
+            // if (
+            //   event.request.url.startsWith("chrome-extension") ||
+            //   event.request.url.includes("extension") ||
+            //   !(url.indexOf("http") === 0)
+            // )
+            //   return;
+            // if (
+            //   event.request.url.indexOf("http") === 0 ||
+            //   event.request.url.indexOf("https")
+            // ) {
+            cache.put(event.request.url, res.clone());
+            // return necessary because giving back reponse to dom is necessary
+            return res;
+            // }
+          });
+        });
       }
     })
   );
