@@ -1,8 +1,8 @@
 // refererring to service worker with self
 // no dom access to sw
 
-var CACHE_STATIC_NAME = "static-v10";
-var CACHE_DYNAMIC_NAME = "dynamic-v3";
+var CACHE_STATIC_NAME = "static-v12";
+var CACHE_DYNAMIC_NAME = "dynamic-v5";
 
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
