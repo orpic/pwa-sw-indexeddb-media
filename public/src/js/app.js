@@ -11,6 +11,9 @@ if ("serviceWorker" in navigator) {
     })
     .then(() => {
       return console.log("Service worker registered");
+    })
+    .catch((err) => {
+      console.log(err);
     });
 }
 
@@ -20,5 +23,3 @@ window.addEventListener("beforeinstallprompt", (event) => {
   console.log("prompt prevent");
   return false;
 });
-
-
