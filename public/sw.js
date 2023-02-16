@@ -4,6 +4,16 @@
 var CACHE_STATIC_NAME = "static-v13";
 var CACHE_DYNAMIC_NAME = "dynamic-v6";
 
+function trimCache(cacheName, maxItems) {
+  caches.open(cacheName).then((cache) => {
+    return cache.keys().then((keys) => {
+      if (keys.length > maxItems) {
+        cache.delete(keys[0]).then(trimCache(cacheName, maxItems));
+      }
+    });
+  });
+}
+
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
 
@@ -66,6 +76,9 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.open(CACHE_DYNAMIC_NAME).then((cache) => {
         return fetch(event.request).then((res) => {
+          //why here
+
+          trimCache(CACHE_DYNAMIC_NAME, 10);
           cache.put(event.request, res.clone());
           return res;
         });
@@ -87,6 +100,9 @@ self.addEventListener("fetch", (event) => {
 
                 // temporarily turn off dynamic caching to simulate
                 // saving on a user onClick event outside of service worker
+
+                // trimming the cache right before we add
+                trimCache(CACHE_DYNAMIC_NAME, 10);
 
                 cache.put(event.request.url, res.clone());
                 return res;
