@@ -1,7 +1,11 @@
 var deferrredPrompt;
 
-// check service worker featuer available or not
+// check borwser supports promises, if not then assign polyfils
+if (!window.Promise) {
+  window.Promise = Promise;
+}
 
+// check service worker featuer available or not
 if ("serviceWorker" in navigator) {
   // register as a service worker
   navigator.serviceWorker
