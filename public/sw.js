@@ -89,15 +89,15 @@ self.addEventListener("fetch", (event) => {
                 // saving on a user onClick event outside of service worker
 
                 cache.put(event.request.url, res.clone());
-
                 return res;
               });
             })
             .catch((err) => {
               // TODO - Handle errors if any
-
               return caches.open(CACHE_STATIC_NAME).then((cache) => {
-                return cache.match("/offline.html");
+                if (event.request.headers.get("accept").includes("text/html")) {
+                  return cache.match("/offline.html");
+                }
               });
             });
         }
