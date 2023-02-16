@@ -1,8 +1,8 @@
 // refererring to service worker with self
 // no dom access to sw
 
-var CACHE_STATIC_NAME = "static-v12";
-var CACHE_DYNAMIC_NAME = "dynamic-v5";
+var CACHE_STATIC_NAME = "static-v13";
+var CACHE_DYNAMIC_NAME = "dynamic-v6";
 
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
@@ -62,34 +62,46 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   // console.log("Fetch event triggered", event)
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      } else {
-        return fetch(event.request)
-          .then((res) => {
-            // return necessary because giving back reponse to dom is necessary
-            return caches.open(CACHE_DYNAMIC_NAME).then((cache) => {
-              // response data is supposed to be consumed once only,
-              // therefore we create an exact clone out of it and
-              // let original be returned
-
-              // temporarily turn off dynamic caching to simulate
-              // saving on a user onClick event outside of service worker
-
-              cache.put(event.request.url, res.clone());
-
-              return res;
-            });
-          })
-          .catch((err) => {
-            // TODO - Handle errors if any
-
-            return caches.open(CACHE_STATIC_NAME).then((cache) => {
-              return cache.match("/offline.html");
-            });
-          });
-      }
+    caches.open(CACHE_DYNAMIC_NAME).then((cache) => {
+      return fetch(event.request).then((res) => {
+        cache.put(event.request, res.clone());
+        return res;
+      });
     })
   );
 });
+
+// self.addEventListener("fetch", (event) => {
+//   // console.log("Fetch event triggered", event)
+//   event.respondWith(
+//     caches.match(event.request).then((response) => {
+//       if (response) {
+//         return response;
+//       } else {
+//         return fetch(event.request)
+//           .then((res) => {
+//             // return necessary because giving back reponse to dom is necessary
+//             return caches.open(CACHE_DYNAMIC_NAME).then((cache) => {
+//               // response data is supposed to be consumed once only,
+//               // therefore we create an exact clone out of it and
+//               // let original be returned
+
+//               // temporarily turn off dynamic caching to simulate
+//               // saving on a user onClick event outside of service worker
+
+//               cache.put(event.request.url, res.clone());
+
+//               return res;
+//             });
+//           })
+//           .catch((err) => {
+//             // TODO - Handle errors if any
+
+//             return caches.open(CACHE_STATIC_NAME).then((cache) => {
+//               return cache.match("/offline.html");
+//             });
+//           });
+//       }
+//     })
+//   );
+// });
