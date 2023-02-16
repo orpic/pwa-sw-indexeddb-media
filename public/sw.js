@@ -1,12 +1,15 @@
 // refererring to service worker with self
 // no dom access to sw
 
+var CACHE_STATIC_NAME = "static-v4";
+var CACHE_DYNAMIC_NAME = "dynamic-v2";
+
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
 
   //refer to cache api, creating an open api
   event.waitUntil(
-    caches.open("static-v2").then((cache) => {
+    caches.open(CACHE_STATIC_NAME).then((cache) => {
       console.log("[Service Worker] Pre-cache..ing app.js ");
       //  cache..ing requests and initial request is root ( "/" )
       // only needed on browsers that dont support service worke
@@ -44,7 +47,7 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
-          if (key !== "static-v2" && key !== "dynamic") {
+          if (key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
             console.log("[Service Worker] : Removinff old cache");
             return caches.delete(key);
           }
@@ -65,7 +68,7 @@ self.addEventListener("fetch", (event) => {
         return fetch(event.request)
           .then((res) => {
             // return necessary because giving back reponse to dom is necessary
-            return caches.open("dynamic").then((cache) => {
+            return caches.open(CACHE_DYNAMIC_NAME).then((cache) => {
               // response data is supposed to be consumed once only,
               // therefore we create an exact clone out of it and
               // let original be returned
