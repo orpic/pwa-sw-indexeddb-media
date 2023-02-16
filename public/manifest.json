@@ -42,7 +42,7 @@
     "start_url" : "/index.html",
     "scope": ".",
     "display": "standalone",
-    "orientation" : "potrait-primary",
+    "orientation" : "portrait-primary",
     "background_color" : "#fff",
     "theme_color" : "#3f51bf",
     "description": "simple pwa",
