@@ -8,6 +8,9 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("static").then((cache) => {
       console.log("[Service Worker] Pre-cache..ing app.js ");
+      //  cache..ing requests and initial request is root ( "/" )
+      cache.add("/");
+      cache.add("/index.html");
       cache.add("/src/js/app.js");
     })
   );
