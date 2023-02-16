@@ -32,21 +32,22 @@ shareImageButton.addEventListener("click", openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener("click", closeCreatePostModal);
 
-function onSaveButtonClicked(event) {
-  console.log("clicked");
+//Switiching back to dynamic fetching
+// function onSaveButtonClicked(event) {
+//   console.log("clicked");
 
-  //cache can be accessed anywhere
+//   //cache can be accessed anywhere
 
-  if ("caches" in window) {
-    // we could disable button if cache functionality is not present
-    // to provide better user experience
+//   if ("caches" in window) {
+//     // we could disable button if cache functionality is not present
+//     // to provide better user experience
 
-    caches.open("user-requested").then((cache) => {
-      cache.add("https://httpbin.org/get");
-      cache.add("/src/images/sf-boat.jpg");
-    });
-  }
-}
+//     caches.open("user-requested").then((cache) => {
+//       cache.add("https://httpbin.org/get");
+//       cache.add("/src/images/sf-boat.jpg");
+//     });
+//   }
+// }
 
 function createCard() {
   var cardWrapper = document.createElement("div");
@@ -68,10 +69,10 @@ function createCard() {
   cardSupportingText.style.textAlign = "center";
 
   //adding a button for user onClick event
-  var cardSaveButton = document.createElement("button");
-  cardSupportingText.appendChild(cardSaveButton);
-  cardSaveButton.textContent = "Save for later";
-  cardSaveButton.addEventListener("click", onSaveButtonClicked);
+  // var cardSaveButton = document.createElement("button");
+  // cardSupportingText.appendChild(cardSaveButton);
+  // cardSaveButton.textContent = "Save for later";
+  // cardSaveButton.addEventListener("click", onSaveButtonClicked);
 
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);

@@ -1,8 +1,8 @@
 // refererring to service worker with self
 // no dom access to sw
 
-var CACHE_STATIC_NAME = "static-v7";
-var CACHE_DYNAMIC_NAME = "dynamic-v2";
+var CACHE_STATIC_NAME = "static-v10";
+var CACHE_DYNAMIC_NAME = "dynamic-v3";
 
 self.addEventListener("install", (event) => {
   console.log("Install event", event);
@@ -19,6 +19,7 @@ self.addEventListener("install", (event) => {
       cache.addAll([
         "/",
         "/index.html",
+        "/offline.html",
         "/src/js/app.js",
         "/src/js/feed.js",
         "/src/js/promise.js",
@@ -76,13 +77,17 @@ self.addEventListener("fetch", (event) => {
               // temporarily turn off dynamic caching to simulate
               // saving on a user onClick event outside of service worker
 
-              // cache.put(event.request.url, res.clone());
+              cache.put(event.request.url, res.clone());
 
               return res;
             });
           })
           .catch((err) => {
             // TODO - Handle errors if any
+
+            return caches.open(CACHE_STATIC_NAME).then((cache) => {
+              return cache.match("/offline.html");
+            });
           });
       }
     })
