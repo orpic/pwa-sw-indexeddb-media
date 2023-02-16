@@ -6,7 +6,7 @@ self.addEventListener("install", (event) => {
 
   //refer to cache api, creating an open api
   event.waitUntil(
-    caches.open("static").then((cache) => {
+    caches.open("static-v2").then((cache) => {
       console.log("[Service Worker] Pre-cache..ing app.js ");
       //  cache..ing requests and initial request is root ( "/" )
       // only needed on browsers that dont support service worke
@@ -36,9 +36,22 @@ self.addEventListener("install", (event) => {
   );
 });
 
+//cleaning old cache only when the new service worker has activated
 self.addEventListener("activate", (event) => {
   console.log("Activate event", event);
-
+  //cleanup
+  event.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(
+        keyList.map((key) => {
+          if (key !== "static-v2" && key !== "dynamic") {
+            console.log("[Service Worker] : Removinff old cache");
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
   return self.clients.claim();
 });
 
@@ -49,28 +62,20 @@ self.addEventListener("fetch", (event) => {
       if (response) {
         return response;
       } else {
-        return fetch(event.request).then((res) => {
-          // return necessary because giving back reponse to dom is necessary
-          return caches.open("dynamic").then((cache) => {
-            // response data is supposed to be consumed once only,
-            // therefore we create an exact clone out of it and
-            // let original be returned
-            // if (
-            //   event.request.url.startsWith("chrome-extension") ||
-            //   event.request.url.includes("extension") ||
-            //   !(url.indexOf("http") === 0)
-            // )
-            //   return;
-            // if (
-            //   event.request.url.indexOf("http") === 0 ||
-            //   event.request.url.indexOf("https")
-            // ) {
-            cache.put(event.request.url, res.clone());
+        return fetch(event.request)
+          .then((res) => {
             // return necessary because giving back reponse to dom is necessary
-            return res;
-            // }
+            return caches.open("dynamic").then((cache) => {
+              // response data is supposed to be consumed once only,
+              // therefore we create an exact clone out of it and
+              // let original be returned
+              cache.put(event.request.url, res.clone());
+              return res;
+            });
+          })
+          .catch((err) => {
+            // TODO - Handle errors if any
           });
-        });
       }
     })
   );
